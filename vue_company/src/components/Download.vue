@@ -1,6 +1,6 @@
 <template>
     <div class="box">
-        <a class="btn" target="_blank" v-on:click="download">Download Data as csv</a>
+        <a class="btn" target="_blank" href="http://localhost:3000/api/customers/download">Download Data as csv</a>
     </div>
 </template>
 

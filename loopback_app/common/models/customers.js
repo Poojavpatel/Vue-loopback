@@ -19,18 +19,30 @@ module.exports = function(Customers) {
         const rescust = Customers.destroyById(cid);
         return "deleted";
     }
-    Customers.download = async function(res){
-        console.log("res",res);
+    // Customers.download = async function(res){
+    //     console.log("res",res);
+    //     const alldata = await Customers.find();
+    //     const fields = ['id','name', 'email', 'phone','city','order'];
+    //     const json2csvParser = new Parser({ fields });
+    //     const mycsv = json2csvParser.parse(alldata);
+    //     // console.log("mycsv",mycsv);
+    //     // res.setHeader('Content-Type', 'text/csv');
+    //     // res.setHeader('Content-disposition', 'attachment; filename=customerdata.csv');
+    //     // res.send(mycsv);
+    //     return mycsv;
+    // }
+    Customers.download = async function( res, callback) {
         const alldata = await Customers.find();
         const fields = ['id','name', 'email', 'phone','city','order'];
         const json2csvParser = new Parser({ fields });
         const mycsv = json2csvParser.parse(alldata);
-        // console.log("mycsv",mycsv);
-        // res.setHeader('Content-Type', 'text/csv');
-        // res.setHeader('Content-disposition', 'attachment; filename=customerdata.csv');
-        // res.send(mycsv);
-        return mycsv;
-    }
+        res.set('Content-Type','application/force-download');
+        res.set('Content-Type','application/octet-stream');
+        res.set('Content-Type','application/download');
+        res.set('Content-Disposition','attachment;filename=Data.csv');
+        res.set('Content-Transfer-Encoding','binary');
+        res.send(mycsv);
+      };
       
      
     // Remote methods
@@ -54,13 +66,12 @@ module.exports = function(Customers) {
         returns: {arg:'msg' , type:'string'},
     })
     Customers.remoteMethod('download',{
-        http: {path: '/download', verb: 'get'},
+        http: {path: '/download/', verb: 'get'},
         returns:[
             {arg: 'body', type: 'file', root: true},    
         ],
-        accepts:[
-            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+        accepts: [
             {arg: 'res', type: 'object', 'http': {source: 'res'}}
-        ]
+        ],
     })
 };
