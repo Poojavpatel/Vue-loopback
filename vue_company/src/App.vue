@@ -3,6 +3,7 @@
     <h1>Welcome to Customers data</h1>
     <Addcustomer></Addcustomer>
     <Customers v-bind:customers="customers"></Customers>
+    <Download></Download>
   </div>
 </template>
 
@@ -10,12 +11,14 @@
 import axios from 'axios';
 import Customers from './components/Customers';
 import Addcustomer from './components/Addcustomer'
+import Download from './components/Download'
 
 export default {
   name: 'app',
   components: {
     Customers,
-    Addcustomer
+    Addcustomer,
+    Download
   },
   data(){
     return{

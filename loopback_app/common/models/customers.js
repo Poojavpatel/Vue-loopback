@@ -19,7 +19,14 @@ module.exports = function(Customers) {
         const rescust = Customers.destroyById(cid);
         return "deleted";
     }
-    
+    Customers.download = async function(){
+        const alldata = await Customers.find();
+        const fields = ['id','name', 'email', 'phone','city','order'];
+        const json2csvParser = new Parser({ fields });
+        const mycsv = json2csvParser.parse(alldata);
+        console.log("mycsv",mycsv);
+        return mycsv;
+    }
      
     // Remote methods
     Customers.remoteMethod('listcustomers',{
@@ -42,7 +49,19 @@ module.exports = function(Customers) {
         returns: {arg:'msg' , type:'string'},
     })
     Customers.remoteMethod('download',{
-        http: { path: '/download', verb: 'get'},
-        returns: {arg:'body', type:'file' , root: true },
+        http: {path: '/download', verb: 'get'},
+        returns:{arg: 'res', type: 'string'},
     })
+    // Customers.remoteMethod('download',{
+    //     returns: [
+    //         {arg: 'body', type: 'file', root: true},
+    //         {arg: 'Content-Type', type: 'string', http: { target: 'header' }}
+    //       ]
+    // })
+    // res.set('Content-Type','application/force-download');
+            // res.set('Content-Type','application/octet-stream');
+            // res.set('Content-Type','application/download');
+            // resp.setHeader('Content-Type', 'text/csv');
+            // resp.setHeader('Content-disposition', 'attachment; filename=customerdata.csv');
+            // resp.status(200).send(mycsv);
 };

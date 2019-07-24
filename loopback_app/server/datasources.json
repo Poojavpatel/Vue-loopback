@@ -2,7 +2,7 @@
   "db": {
     "host": "localhost",
     "port": 27017,
-    "url": "",
+    "url": "mongodb://localhost:27017/startup",
     "database": "startup",
     "password": "",
     "name": "db",
