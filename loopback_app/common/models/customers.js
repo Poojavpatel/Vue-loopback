@@ -19,14 +19,19 @@ module.exports = function(Customers) {
         const rescust = Customers.destroyById(cid);
         return "deleted";
     }
-    Customers.download = async function(){
+    Customers.download = async function(res){
+        console.log("res",res);
         const alldata = await Customers.find();
         const fields = ['id','name', 'email', 'phone','city','order'];
         const json2csvParser = new Parser({ fields });
         const mycsv = json2csvParser.parse(alldata);
-        console.log("mycsv",mycsv);
+        // console.log("mycsv",mycsv);
+        // res.setHeader('Content-Type', 'text/csv');
+        // res.setHeader('Content-disposition', 'attachment; filename=customerdata.csv');
+        // res.send(mycsv);
         return mycsv;
     }
+      
      
     // Remote methods
     Customers.remoteMethod('listcustomers',{
@@ -50,18 +55,12 @@ module.exports = function(Customers) {
     })
     Customers.remoteMethod('download',{
         http: {path: '/download', verb: 'get'},
-        returns:{arg: 'res', type: 'string'},
+        returns:[
+            {arg: 'body', type: 'file', root: true},    
+        ],
+        accepts:[
+            {arg: 'req', type: 'object', 'http': {source: 'req'}},
+            {arg: 'res', type: 'object', 'http': {source: 'res'}}
+        ]
     })
-    // Customers.remoteMethod('download',{
-    //     returns: [
-    //         {arg: 'body', type: 'file', root: true},
-    //         {arg: 'Content-Type', type: 'string', http: { target: 'header' }}
-    //       ]
-    // })
-    // res.set('Content-Type','application/force-download');
-            // res.set('Content-Type','application/octet-stream');
-            // res.set('Content-Type','application/download');
-            // resp.setHeader('Content-Type', 'text/csv');
-            // resp.setHeader('Content-disposition', 'attachment; filename=customerdata.csv');
-            // resp.status(200).send(mycsv);
 };
